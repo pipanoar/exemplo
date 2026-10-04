@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Pipa exemplo Expo",
+    "slug": "pipanoar-exemplo-expo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "br.com.scuderiatech.pipanoar.exemploexpo"
+    },
+    "android": {
+      "package": "br.com.scuderiatech.pipanoar.exemploexpo",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      [
+        "@hot-updater/expo",
+        {
+          "channel": "production"
+        }
+      ]
+    ],
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

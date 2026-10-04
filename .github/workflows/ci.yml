@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App que vai receber o update"
+        type: choice
+        options: [bare, expo]
+        default: bare
+      channel:
+        description: "Canal (production, beta, ...)"
+        type: string
+        default: production
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  # Prova que o JavaScript compila, sem Xcode nem Android SDK.
+  bare:
+    name: React Native (bare)
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bare
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: bare/package-lock.json
+      - run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Bundle do Android (Metro)
+        run: npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output /tmp/index.android.bundle
+      - name: Bundle do iOS (Metro)
+        run: npx react-native bundle --platform ios --dev false --entry-file index.js --bundle-output /tmp/main.jsbundle
+
+  expo:
+    name: Expo
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: expo
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: expo/package-lock.json
+      - run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Bundle do Android e do iOS (expo export)
+        run: npx expo export --platform android --platform ios --output-dir /tmp/expo-export
+
+  # Manual: Actions, CI, Run workflow. Publica um update pelo ar no Pipa no Ar.
+  deploy:
+    name: Deploy OTA (${{ inputs.app }}, Android)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.app }}
+    env:
+      PIPANOAR_TOKEN: ${{ secrets.PIPANOAR_TOKEN }}
+      PIPANOAR_APP_ID: ${{ secrets.PIPANOAR_APP_ID }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ inputs.app }}/package-lock.json
+      - name: Conferir segredos
+        run: |
+          if [ -z "$PIPANOAR_TOKEN" ]; then
+            echo "::error::Crie o segredo PIPANOAR_TOKEN (token de deploy do painel, em Tokens de deploy)."
+            exit 1
+          fi
+      - run: npm ci
+      - name: Publicar no canal escolhido
+        env:
+          CHANNEL: ${{ inputs.channel }}
+        run: npm run deploy:android -- -c "$CHANNEL"
