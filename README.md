@@ -1,6 +1,6 @@
 # Pipa no Ar: apps de exemplo
 
-Dois apps React Native mínimos configurados com o [Pipa no Ar](https://pipanoar.scuderiatech.com.br), updates OTA para React Native sem operar servidor, banco ou armazenamento. Os dois usam o SDK e a CLI oficiais do [hot-updater](https://hot-updater.dev), na versão `1.0.0-rc.24`, com o preset [`@pipanoar/hot-updater`](https://www.npmjs.com/package/@pipanoar/hot-updater).
+Dois apps React Native mínimos configurados com o [Pipa no Ar](https://pipanoar.scuderiatech.com.br), updates OTA para React Native sem operar servidor, banco ou armazenamento. Os dois usam o SDK e a CLI oficiais do [hot-updater](https://hot-updater.dev), na versão `1.0.6`, com o preset [`@pipanoar/hot-updater`](https://www.npmjs.com/package/@pipanoar/hot-updater).
 
 A tela de cada app mostra a **Versão do JavaScript**, o id do bundle em uso, o canal e a versão do app. Você muda o JavaScript, publica, reabre o app e vê o update chegar.
 
@@ -9,7 +9,7 @@ A tela de cada app mostra a **Versão do JavaScript**, o id do bundle em uso, o 
 | [`bare/`](bare) | React Native sem Expo, criado com o template oficial (`@react-native-community/cli`) | React Native 0.85.3, React 19.2.3 |
 | [`expo/`](expo) | Expo com prebuild (o `ios/` e o `android/` são gerados) | Expo SDK 56, React Native 0.85.3 |
 
-Os dois usam `@hot-updater/react-native`, `hot-updater` e `@hot-updater/bare` ou `@hot-updater/expo` na versão `1.0.0-rc.24`, e `@pipanoar/hot-updater` 0.1.
+Os dois usam `@hot-updater/react-native`, `hot-updater` e `@hot-updater/bare` ou `@hot-updater/expo` na versão `1.0.6`, e `@pipanoar/hot-updater` 0.2.
 
 **Documentação:** https://docs.pipanoar.scuderiatech.com.br
 
@@ -81,7 +81,6 @@ O Expo Go não carrega bundles de fora, então não serve para testar updates. U
 ```sh
 cd expo
 npm install
-export PIPANOAR_TOKEN=pn_...   # o plugin do hot-updater lê o hot-updater.config.ts no prebuild
 npx expo prebuild
 npm run android:release        # ou ios:release
 ```
@@ -119,7 +118,7 @@ O job roda `npx hot-updater deploy -p android` no app escolhido. Mais detalhes e
 
 ## English
 
-Minimal React Native apps (bare and Expo) wired to [Pipa no Ar](https://pipanoar.scuderiatech.com.br), a hosted over-the-air update service for React Native built on the official [hot-updater](https://hot-updater.dev) SDK and CLI (`1.0.0-rc.24`).
+Minimal React Native apps (bare and Expo) wired to [Pipa no Ar](https://pipanoar.scuderiatech.com.br), a hosted over-the-air update service for React Native built on the official [hot-updater](https://hot-updater.dev) SDK and CLI (`1.0.6`).
 
 1. Create an app in the [dashboard](https://app.pipanoar.scuderiatech.com.br), then put its appId and an API key in `src/pipanoar.ts`.
 2. Create a deploy token and export it as `PIPANOAR_TOKEN`. Never commit it.
